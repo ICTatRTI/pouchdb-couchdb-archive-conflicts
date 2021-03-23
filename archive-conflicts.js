@@ -7,7 +7,8 @@ module.exports = async function archiveConflicts(dbPath, docId) {
     const doc = await dbSource.get(docId, {conflicts: true})
     for (conflictRev of doc._conflicts) {
       const conflictRevDoc = await dbSource.get(docId, {rev: conflictRev})
-      conflictRevDoc.originalDocId = conflictRevDoc._id
+      conflictRevDoc.conflictDocId = docId 
+      conflictRevDoc.conflictRev = conflictRev
       delete conflictRevDoc._id
       delete conflictRevDoc._rev
       await dbConflictRevs.post(conflictRevDoc)
